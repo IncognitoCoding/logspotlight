@@ -1,5 +1,5 @@
 # Overview:
-LogSpotlight is a highly customizable log monitoring program. It is designed to be simple to use but very effective in monitoring log files. All configuration is set up through a simple to use YAML configuration file, and you can add as many logs as you would like to monitor. This program's key advantage is its message encryption option to protect any sensitive information from being read. A web GUI companion program is offered to allow the ability to decrypt the message. Because this option is not SSL, you should run this program on a VLAN that cannot be snooped with Wireshark. If you have ever wanted to perform another action once a log entry is discovered, this program offers post-processing per software log entry and offers to search the output.
+LogSpotlight is a highly customizable log monitoring program. It is designed to be simple to use but very effective in monitoring log files. All configuration is set up through a simple to use YAML configuration file, and you can add as many logs as you would like to monitor. This program's key advantage is its message encryption option to protect any sensitive information from being read. A web GUI companion program is offered to allow the ability to decrypt the message. Because this option is not SSL, you should run this program on a VLAN that cannot be snooped with Wireshark or through a reverse proxy with SSL. If you have ever wanted to perform another action once a log entry is discovered, this program offers post-processing per software log entry and offers to search the output.
 
 If you use docker and would like to centralize your docker logs to be monitored, check out [DockerLogRedirect] (https://github.com/IncognitoCoding/dockerlogredirect)
 
@@ -9,9 +9,11 @@ If you use docker and would like to centralize your docker logs to be monitored,
 * Search for multiple key search words or phrases.
 * Email supports standard port 25 or TLS.
 * Customizable subject line for each search.
+* Supports Non-HTML or HTML templated messages.
+* Supports limited message details.
 * Customizable program log output and debug options.
 * Log check cycle setting.
-* Encrypt email messages.
+* Supports log output message encryption.
 * Message decryption web GUI companion.
 * Post-processing option when a log entry gets discovered.
 * Post-processing option to send matched info as an argument.
