@@ -1,0 +1,8 @@
+<p>LogSpotlight has detected a log match at {{ date }}.</p>
+<p>The matched log entry is encrypted. Please use the code below to decrypt the message.</p>
+<p>Decryption Code: @START-ENCRYPT@{{ matched_info }}@END-ENCRYPT@</p>
+<p>
+	{% if decryptor_url +%}
+		<a href="{{ decryptor_url }}">Decrypt</a>
+	{% endif %}
+</p>

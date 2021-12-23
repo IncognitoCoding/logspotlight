@@ -1,0 +1,7 @@
+*.log
+venv/
+settings.yaml
+sample_search/
+.vscode/
+.vscode/settings.json
+__pycache__/

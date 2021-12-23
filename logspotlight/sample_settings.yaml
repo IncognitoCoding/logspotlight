@@ -1,0 +1,168 @@
+general:
+  # Add the number of seconds to sleep between log checks
+  monitor_sleep: 15
+  # True: enabled, False: disabled
+  email_alerts: True
+  # Sends email alerts with program crashes
+  # True: enabled, False: disabled
+  alert_program_errors: True
+
+
+software:
+  # Required Software Entry Values:
+  #   - name
+  #   - url_log_path
+  #   - info_search
+  software_entry1:
+    # Add the software name
+    name: 'MySoftware1'
+    url_log_path: '\\mypath\sample1.log'
+    # Add search info. List format for multiple entries.
+    info_search:
+      - '|Error|'
+      - 'Warning'
+    # (Optional): Add exclude info. List format for multiple entries.
+    exclude_search: 
+      - 'Restart'
+      - 'Starting'
+    # (Optional): Add a customized email subject line per entry. The default subject line will include the search info.
+    email_subject_line:
+    # (Optional): Add post processing args, such as running a post processing program. List format for multiple argument entries. Ex: ipconfig /all would be two separate entries.
+    post_processing_args: 'getmac'
+    # (Optional): Send the matched value as last argument. The program or script must accept raw arguments with no options requirement. True: enabled, False: disabled
+    post_processing_add_match: False
+    # (Optional): Add post processing output search. List format for multiple entries.
+    post_processing_info_search: ''
+    # (Optional): Add a customized email subject line per entry. The default subject line will include the search info.
+    post_processing_email_subject_line:
+  software_entry2:
+    # Add the software name
+    name: 'MySoftware2'
+    url_log_path: '\\mypath\sample2.log'
+    # Add search info. List format for multiple entries.
+    info_search: '|Error|'
+    # (Optional): Add exclude info. List format for multiple entries.
+    exclude_search: 'Restart'
+    # (Optional): Add a customized email subject line per entry. The default subject line will include the search info.
+    email_subject_line:
+    # (Optional): Add post processing args, such as running a post processing program. List format for multiple argument entries. Ex: ipconfig /all would be two separate entries.
+    post_processing_args:
+      - 'python'
+      - '\\mypath\script.py'
+    # (Optional): Send matched info as last argument. The program or script must accept raw arguments with no options requirement. True: enabled, False: disabled
+    post_processing_send_info: True
+    # (Optional): Add post processing output search. List format for multiple entries.
+    post_processing_info_search: 
+      - 'Output Entry 1'
+      - 'Output Entry 2'
+    # (Optional): Add a customized email subject line per entry. The default subject line will include the search info.
+    post_processing_email_subject_line:
+  # Add any additional software entries below and increase the number by 1
+  # Requires all sample keys.
+
+
+email:
+  smtp: smtp.yourdomain.com
+  # True: enabled, False: disabled
+  authentication_required: False
+  username: SMTP_username
+  # Leave blank if not required
+  password: SMTP_password
+  # True: Use TLS on port 587, False: Standard port 25
+  use_tls: False
+  from_email: logspotlight@monitoring.me
+  to_email: youremail@monitoring.me
+  # Allows the alert message to be encrypted
+  # True: enabled, False: disabled
+  send_message_encrypted: True
+  # Enables email templates.
+  # True: enabled, False: disabled
+  send_email_template: True
+  # Displays the matching message only.
+  # True: enabled, False: disabled
+  limit_message_detail: True
+  # These settings are required to send an encrypted email message
+  # Password input to be used with the random salt
+  message_encryption_password: ChangePassword1
+  # Create a random "salt" using this command "print("random16 Key:", os.random(16))"
+  message_encryption_random_salt: b'ChangeME'
+
+
+companion_programs:
+  # Allows a decryption web option for encrypted info
+  # URL: http://127.0.0.1:5000/ or http://<host ip>:5000/
+  # True: enabled, False: disabled
+  decryptor_web_companion_option: True
+
+
+# #############################################################################################
+# #####################################Logging Settings Below##################################
+# #############################################################################################
+version: 1
+disable_existing_loggers: False
+formatters:
+  simple:
+    format: "%(asctime)s|%(levelname)s|%(message)s (Module:%(module)s, Function:%(funcName)s, Line:%(lineno)s)"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+  detected:
+    format: "%(asctime)s|%(levelname)s|%(message)s (Module:%(module)s, Function:%(funcName)s, Line:%(lineno)s)"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: simple
+    stream: ext://sys.stdout
+  logspotlight_log_file:
+    class: logging.handlers.RotatingFileHandler
+    level: DEBUG
+    formatter: simple
+    # Default log paths are possible by typing DEFAULT in all caps. DEFAULT will use the main program name as the log file name. Add :<log name> to the end of DEFAULT to define a log name. Manual paths can be entered as usual.
+    # DEFAULT configured logs will add to the main program directory under logs.
+    # The default path option is only available when using the log_director function from ictoolkit.
+    filename: DEFAULT
+    # Default 1000000 Bytes (1 Megabyte)
+    maxBytes: 1000000
+    backupCount: 3
+    encoding: utf8
+  logspotlight_detected_log_file:
+    class: logging.handlers.RotatingFileHandler
+    level: INFO
+    formatter: detected
+    # Default log paths are possible by typing DEFAULT in all caps. DEFAULT will use the main program name as the log file name. Add :<log name> to the end of DEFAULT to define a log name. Manual paths can be entered as usual.
+    # DEFAULT configured logs will add to the main program directory under logs.
+    # The default path option is only available when using the log_director function from ictoolkit.
+    filename: DEFAULT:detected
+    # Default 1000000 Bytes (1 Megabyte)
+    maxBytes: 1000000
+    backupCount: 4
+    encoding: utf8
+
+loggers:
+  detected:
+    level: INFO
+    handlers: [logspotlight_detected_log_file]
+    propagate: no
+  __main__:
+    level: INFO
+    handlers: [console, logspotlight_log_file]
+    propagate: no
+  tracker.tracker:
+    level: INFO
+    handlers: [console, logspotlight_log_file]
+    propagate: no
+  companion.decryptor.http_info_decryptor:
+    level: INFO
+    handlers: [console, logspotlight_log_file]
+    propagate: no
+  ictoolkit:
+    level: INFO
+    handlers: [logspotlight_log_file]
+    propagate: no
+
+root:
+  level: INFO
+  handlers: [console]
+# #############################################################################################
+# #############################################################################################

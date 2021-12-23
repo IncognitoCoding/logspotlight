@@ -1,0 +1,12 @@
+<p>LogSpotlight post-processing has been trigged at {{ date }}.</p>
+<p>The triggering program's name is {{ software_name }}.</p>
+<p>Below are details on how the LogSpotlight post-processing event was triggered.</p>
+<ul>
+	<li>Triggered Monitoring Log/File Path = {{ url_log_path }}</li>
+    <li>Triggered Log Match = {{ matched_info }}</li>
+    <li>Post-processing Args = {{ post_processing_args }}</li>
+    <li>Send Matched Values As Args = {{ post_processing_send_info }}</li>
+	<li>Post-processing Searching Values = {{ post_processing_info_search }}</li>
+</ul>
+<p>The post-processing matched log entry is listed below.</p>
+<p>Matched Log: {{ post_processing_matched_info }}</p>

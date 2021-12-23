@@ -1,0 +1,17 @@
+<p>LogSpotlight post-processing has been trigged at {{ date }}.</p>
+<p>The triggering program's name is {{ software_name }}.</p>
+<p>Below are details on how the LogSpotlight post-processing event was triggered.</p>
+<ul>
+	<li>Triggered Monitoring Log/File Path = {{ url_log_path }}</li>
+    <li>Triggered Log Match = @START-ENCRYPT@{{ matched_info }}@END-ENCRYPT@</li>
+    <li>Post-processing Args = {{ post_processing_args }}</li>
+    <li>Send Matched Values As Args = {{ post_processing_send_info }}</li>
+	<li>Post-processing Searching Values = {{ post_processing_info_search }}</li>
+</ul>
+<p>The post-processing matched log entry is encrypted. Please use the code below to decrypt the message.</p>
+<p>Decryption Code: @START-ENCRYPT@{{ post_processing_matched_info }}@END-ENCRYPT@</p>
+<p>
+	{% if decryptor_url +%}
+		<a href="{{ decryptor_url }}">Decrypt</a>
+	{% endif %}
+</p>
