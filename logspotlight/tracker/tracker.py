@@ -36,7 +36,7 @@ __author__ = 'IncognitoCoding'
 __copyright__ = 'Copyright 2021, tracker'
 __credits__ = ['IncognitoCoding']
 __license__ = 'GPL'
-__version__ = '0.1'
+__version__ = '0.2'
 __maintainer__ = 'IncognitoCoding'
 __status__ = 'Development'
 
@@ -184,7 +184,7 @@ def software_log_info_check(detection_tracking_file_path: str, monitored_softwar
                 'error_type': Exception,
                 'original_error': error,
             }
-            error_formatter(error_args, __name__, get_line_number())
+            error_formatter(error_args, __name__, error.__traceback__.tb_lineno)
 
 
 def email_constructor(email_settings: dict, **message_args) -> None:
@@ -254,8 +254,6 @@ def email_constructor(email_settings: dict, **message_args) -> None:
         # No email template. Setting to default values.
         email_template_path = None
 
-    # Sets the decrytor URL to None in case the decryptor companion is disabled.
-    decryptor_url = None
     try:
         if 'discovery' == log_section:
             # Gets all requires section software match arguments.
@@ -552,7 +550,7 @@ def email_constructor(email_settings: dict, **message_args) -> None:
                 'error_type': Exception,
                 'original_error': error,
             }
-            error_formatter(error_args, __name__, get_line_number())
+            error_formatter(error_args, __name__, error.__traceback__.tb_lineno)
 
 
 def start_tracker(save_log_path, email_alerts: str, alert_program_errors: bool, monitored_software_settings: list, email_settings: dict, monitor_sleep: str, decryptor_web_companion_option: bool) -> None:
@@ -626,6 +624,11 @@ def start_tracker(save_log_path, email_alerts: str, alert_program_errors: bool, 
                 logger.info(f'The decryptor site companion program has started. You may access the webpage via http://127.0.0.1:5000/ or {decryptor_url}')
             else:
                 logger.warning('Failed to start the start_decryptor_site companion program. The program will continue, but additional troubleshooting will be required to utilize the decryption companion\'s web interface')
+        else:
+            # Gets the hosts IP address for message output.
+            host_ip = socket.gethostbyname(socket.gethostname())
+            decryptor_url = f'http://{host_ip}:5000/'
+            logger.debug(f'The decryptor site companion program check passed. The site is still reachable via http://127.0.0.1:5000/ or {decryptor_url}.')
     elif decryptor_web_companion_option is False:
         decryptor_url = None
         # Checks if the start_decryptor_site companion program is running. This can happen when the yaml is modified when the program is running.
@@ -880,7 +883,7 @@ def start_tracker(save_log_path, email_alerts: str, alert_program_errors: bool, 
                                 'error_type': Exception,
                                 'original_error': error,
                             }
-                            error_formatter(error_args, __name__, get_line_number())
+                            error_formatter(error_args, __name__, error.__traceback__.tb_lineno)
                 elif alert_program_errors is False:
                     logger.debug(f'The user chooses not to send program errors to email')
                 else:
@@ -888,7 +891,7 @@ def start_tracker(save_log_path, email_alerts: str, alert_program_errors: bool, 
                         'main_message': 'The user did not choose an option on sending program errors to email. Continuing to exit',
                         'error_type': ValueError,
                     }
-                    error_formatter(error_args, __name__, get_line_number())
+                    error_formatter(error_args, __name__, error.__traceback__.tb_lineno)
                 # Checks if the user entered an incorrect program entry.
                 if 'The system cannot find the file specified' in str(error):
                     # Pulls the subprocess entry name using regex. The .* is used to match any character between ().
@@ -904,7 +907,7 @@ def start_tracker(save_log_path, email_alerts: str, alert_program_errors: bool, 
                         'returned_result': 'This error can happen because of a typo, or the calling program is not referenceable. Please check your settings.yaml file settings.',
                         'original_error': error,
                     }
-                    error_formatter(error_args, __name__, get_line_number())
+                    error_formatter(error_args, __name__, error.__traceback__.tb_lineno)
                 # Checks if the user entered a subprocess that didn't get flagged by an incorrect program entry.
                 elif 'The sub-process' in str(error):
                     # Pulls the subprocess entry name using regex. The .* is used to match any character between ().
@@ -920,7 +923,7 @@ def start_tracker(save_log_path, email_alerts: str, alert_program_errors: bool, 
                         'returned_result': 'This error can happen because of a typo, or the calling program is not referenceable. Please check your settings.yaml file settings.',
                         'original_error': error,
                     }
-                    error_formatter(error_args, __name__, get_line_number())
+                    error_formatter(error_args, __name__, error.__traceback__.tb_lineno)
                 else:
                     logger.debug(f'Forwarding caught {type(error).__name__} at line {error.__traceback__.tb_lineno} in <{__name__}>')
                     raise error
@@ -930,4 +933,4 @@ def start_tracker(save_log_path, email_alerts: str, alert_program_errors: bool, 
                     'error_type': Exception,
                     'original_error': error,
                 }
-                error_formatter(error_args, __name__, get_line_number())
+                error_formatter(error_args, __name__, error.__traceback__.tb_lineno)

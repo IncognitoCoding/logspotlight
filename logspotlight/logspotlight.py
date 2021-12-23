@@ -24,7 +24,7 @@ __author__ = 'IncognitoCoding'
 __copyright__ = 'Copyright 2021, logspotlight'
 __credits__ = ['IncognitoCoding']
 __license__ = 'GPL'
-__version__ = '0.1'
+__version__ = '0.2'
 __maintainer__ = 'IncognitoCoding'
 __status__ = 'Development'
 
@@ -158,7 +158,7 @@ def merge_software_monitored_settings(config_yaml_read: yaml) -> list:
                 'error_type': Exception,
                 'original_error': error,
             }
-            error_formatter(error_args, __name__, get_line_number())
+            error_formatter(error_args, __name__, error.__traceback__.tb_lineno)
 
 
 def populate_startup_variables() -> dict:
@@ -324,7 +324,7 @@ def populate_startup_variables() -> dict:
                     'error_type': Exception,
                     'original_error': error,
                 }
-                error_formatter(error_args, __name__, get_line_number())
+                error_formatter(error_args, __name__, error.__traceback__.tb_lineno)
         ##############################################################################
         # Sets the monitored software settings to the startup_variable dictionary
         startup_variables['monitored_software_settings'] = monitored_software_settings
@@ -350,7 +350,7 @@ def populate_startup_variables() -> dict:
                 'error_type': Exception,
                 'original_error': error,
             }
-            error_formatter(error_args, __name__, get_line_number())
+            error_formatter(error_args, __name__, error.__traceback__.tb_lineno)
 
 
 def main():
@@ -387,7 +387,7 @@ def main():
                 'error_type': Exception,
                 'original_error': error,
             }
-            error_formatter(error_args, __name__, get_line_number())
+            error_formatter(error_args, __name__, error.__traceback__.tb_lineno)
 
     logger = logging.getLogger(__name__)
     logger.debug(f'=' * 20 + get_function_name() + '=' * 20)
@@ -419,7 +419,7 @@ def main():
                 'error_type': Exception,
                 'original_error': error,
             }
-            error_formatter(error_args, __name__, get_line_number())
+            error_formatter(error_args, __name__, error.__traceback__.tb_lineno)
 
     # ####################################################################
     # ###################Dictionary Key Validation########################
@@ -476,7 +476,7 @@ def main():
                 'error_type': Exception,
                 'original_error': error,
             }
-            error_formatter(error_args, __name__, get_line_number())
+            error_formatter(error_args, __name__, error.__traceback__.tb_lineno)
 
 
 # Checks that this is the main program initiates the classes to start the functions.
