@@ -54,6 +54,10 @@ def software_log_info_check(detection_tracking_file_path: str, monitored_softwar
 
     Returns:
         list or None: a list of discovered search values that have not been previously matched. Each discovered value is per element. No discovered values will return None
+
+    Raises:
+        Exception: Forwarding caught {type(error).__name__} at line {error.__traceback__.tb_lineno} in <{__name__}>
+        Exception: A general error occurred while populating the startup variables.
     """
     logger = logging.getLogger(__name__)
     logger.debug(f'=' * 20 + get_function_name() + '=' * 20)
@@ -223,11 +227,9 @@ def email_constructor(email_settings: dict, **message_args) -> None:
                     \\- program_error_message (required)\\
 
     Raises:
-        ValueError: The log_section value did not match.
-        AttributeError: {error}Additional traceback reverse path line: {error.__traceback__.tb_lineno} in <{__name__}>
-        TypeError: {error}Additional traceback reverse path line: {error.__traceback__.tb_lineno} in <{__name__}>
-        ValueError: {error}Additional traceback reverse path line: {error.__traceback__.tb_lineno} in <{__name__}>
-        ValueError: {error}Additional traceback reverse path line: {error.__traceback__.tb_lineno} in <{__name__}>
+        AttributeError: The log_section value did not match.
+        Exception: Forwarding caught {type(error).__name__} at line {error.__traceback__.tb_lineno} in <{__name__}>
+        Exception: A general exception occurred when constructing the email message.
     """
     logger = logging.getLogger(__name__)
     logger.debug(f'=' * 20 + get_function_name() + '=' * 20)
@@ -532,7 +534,7 @@ def email_constructor(email_settings: dict, **message_args) -> None:
         else:
             error_args = {
                 'main_message': 'The log_section value did not match.',
-                'error_type': ValueError,
+                'error_type': AttributeError,
                 'expected_result': 'discovery, post-processing, or error_message',
                 'returned_result': log_section,
             }
@@ -567,13 +569,14 @@ def start_tracker(save_log_path, email_alerts: str, alert_program_errors: bool, 
         decryptor_web_companion_option (bool): Allows a decryption web option for encrypted info.
 
     Raises:
-        ValueError: The software search settings are missing required keys.
-        ValueError: {error}Additional traceback reverse path line: {error.__traceback__.tb_lineno} in <{__name__}>
-        ValueError: A general exception occurred when attempting to send an email.
-        ValueError: Additional mid-traceback details. The system cannot find the file specified while attempting to run the following post-processing commands {subprocess_command}.
-        ValueError: Additional mid-traceback details. The system countered the following error ({error}) while running the following post-processing commands {subprocess_command}.
-        ValueError: {error}Additional traceback reverse path line: {error.__traceback__.tb_lineno} in <{__name__}>
-        ValueError: A general exception occurred when checking if the searched info exist in the software log.
+        KeyError: The software search settings are missing required keys.
+        Exception: Forwarding caught {type(error).__name__} at line {error.__traceback__.tb_lineno} in <{__name__}>
+        Exception: A general exception occurred when attempting to send an email.
+        ValueError: The user did not choose an option on sending program errors to email. Continuing to exit
+        Exception: Additional mid-traceback details. The system cannot find the file specified while attempting to run the following post-processing commands {subprocess_command}.
+        Exception: Additional mid-traceback details. The system countered the following error ({error}) while running the following post-processing commands {subprocess_command}.
+        Exception: Forwarding caught {type(error).__name__} at line {error.__traceback__.tb_lineno} in <{__name__}>
+        Exception: A general exception occurred when checking if the searched info exist in the software log.
     """
     logger = logging.getLogger(__name__)
     logger.debug(f'=' * 20 + get_function_name() + '=' * 20)

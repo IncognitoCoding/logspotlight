@@ -40,9 +40,11 @@ def merge_software_monitored_settings(config_yaml_read: yaml) -> list:
         config_yaml_read (yaml): read in YAML configuration
 
     Raises:
-        ValueError: The YAML software entry section is missing the required keys. Please verify you have set all required keys and try again
-        ValueError: No value has been entered for '{key}' nested key 'info_search' in the YAML file
-        ValueError: Incorrect '{key}' nested key 'info_search' YAML value. <class 'str' or class 'list'> is required
+        KeyError: The YAML software entry section is missing YAML configuration keys.
+        KeyError: No value has been entered for '{key}' nested key 'info_search' in the YAML file.
+        KeyError: Incorrect '{key}' nested key 'info_search' YAML value. <class 'str' or class 'list'> is required.
+        Exception: Forwarding caught {type(error).__name__} at line {error.__traceback__.tb_lineno} in <{__name__}>
+        Exception: A general error occurred while merging the software monitoring settings.
 
     Returns:
         list: A list of individual software monitored settings. Each line represents an individual software. The list is returned with individual list elements. Each list element
@@ -168,17 +170,14 @@ def populate_startup_variables() -> dict:
     settings are completed in the "settings.yaml" configuration file.
 
     Raises:
-        ValueError: The 'general' key is missing from the YAML file
-        ValueError: The 'software' key is missing from the YAML file
-        ValueError: The 'email' key is missing from the YAML file
-        ValueError: The 'companion_programs' key is missing from the YAML file
-        ValueError: The 'logging' key is missing from the YAML file
-        ValueError: {error}Additional traceback reverse path line
-        ValueError: An error occurred while merging the software monitoring settings.
-        NameError: {error}Additional traceback reverse path line
-        KeyError: {error}Additional traceback reverse path line
-        ValueError: {error}Additional traceback reverse path line
-        ValueError: An error occurred while populating the startup variables.
+        KeyError: The 'general' key is missing from the YAML file
+        KeyError: The 'software' key is missing from the YAML file
+        KeyError: The 'email' key is missing from the YAML file
+        KeyError: The 'companion_programs' key is missing from the YAML file
+        Exception: Forwarding caught {type(error).__name__} at line {error.__traceback__.tb_lineno} in <{__name__}>
+        Exception: A general error occurred while merging the software monitoring settings.
+        Exception: Forwarding caught {type(error).__name__} at line {error.__traceback__.tb_lineno} in <{__name__}>
+        Exception: A general error occurred while populating the startup variables.
 
     Returns:
         dict: A dictionary of all startup variables required for the program to run. These startup variables consist of pre-configured and YAML configuration.
