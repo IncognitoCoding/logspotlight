@@ -24,7 +24,7 @@ __author__ = 'IncognitoCoding'
 __copyright__ = 'Copyright 2021, logspotlight'
 __credits__ = ['IncognitoCoding']
 __license__ = 'GPL'
-__version__ = '0.2'
+__version__ = '0.3'
 __maintainer__ = 'IncognitoCoding'
 __status__ = 'Development'
 

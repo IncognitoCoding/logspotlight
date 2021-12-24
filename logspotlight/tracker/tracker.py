@@ -36,7 +36,7 @@ __author__ = 'IncognitoCoding'
 __copyright__ = 'Copyright 2021, tracker'
 __credits__ = ['IncognitoCoding']
 __license__ = 'GPL'
-__version__ = '0.2'
+__version__ = '0.3'
 __maintainer__ = 'IncognitoCoding'
 __status__ = 'Development'
 
@@ -56,6 +56,8 @@ def software_log_info_check(detection_tracking_file_path: str, monitored_softwar
         list or None: a list of discovered search values that have not been previously matched. Each discovered value is per element. No discovered values will return None
 
     Raises:
+    Exception: Forwarding caught {type(error).__name__} at line {error.__traceback__.tb_lineno} in <{__name__}>
+        Exception: A general exception occurred during the value type validation.
         Exception: Forwarding caught {type(error).__name__} at line {error.__traceback__.tb_lineno} in <{__name__}>
         Exception: A general error occurred while populating the startup variables.
     """
@@ -66,24 +68,45 @@ def software_log_info_check(detection_tracking_file_path: str, monitored_softwar
     logger_flowchart = logging.getLogger('flowchart')
     logger_flowchart.debug(f'Flowchart --> Function: {get_function_name()}')
 
-    # Requires pre-logger formatting because the logger can not use one line if/else or join without excluding sections of the the output.
-    if isinstance(info_search, list):
-        formatted_info_search = '  - info_search (list):' + str('\n        - ' + '\n        - '.join(map(str, info_search)))
-    else:
-        formatted_info_search = f'  - info_search (str):\n        - {info_search}'
-    if isinstance(exclude_search, list):
-        formatted_exclude_search = '  - exclude_search (list):' + str('\n        - ' + '\n        - '.join(map(str, exclude_search)))
-    else:
-        formatted_exclude_search = f'  - exclude_search (str):\n        - {exclude_search}'
+    # Checks function launch variables and logs passing parameters.
+    try:
+        # Validates required types.
+        value_type_validation(detection_tracking_file_path, str, __name__, get_line_number())
+        value_type_validation(monitored_software_file_path, str, __name__, get_line_number())
+        value_type_validation(monitored_software_name, str, __name__, get_line_number())
+        value_type_validation(info_search, [str, list], __name__, get_line_number())
+        if exclude_search:
+            value_type_validation(exclude_search, [str, list], __name__, get_line_number())
 
-    logger.debug(
-        'Passing parameters:\n'
-        f'  - detection_tracking_file_path (str):\n        - {detection_tracking_file_path}\n'
-        f'  - monitored_software_file_path (str):\n        - {monitored_software_file_path}\n'
-        f'  - monitored_software_name (str):\n        - {monitored_software_name}\n'
-        f'{formatted_info_search}\n'
-        f'{formatted_exclude_search}\n'
-    )
+        # Requires pre-logger formatting because the logger can not use one line if/else or join without excluding sections of the the output.
+        if isinstance(info_search, list):
+            formatted_info_search = '  - info_search (list):' + str('\n        - ' + '\n        - '.join(map(str, info_search)))
+        else:
+            formatted_info_search = f'  - info_search (str):\n        - {info_search}'
+        if isinstance(exclude_search, list):
+            formatted_exclude_search = '  - exclude_search (list):' + str('\n        - ' + '\n        - '.join(map(str, exclude_search)))
+        else:
+            formatted_exclude_search = f'  - exclude_search (str):\n        - {exclude_search}'
+
+        logger.debug(
+            'Passing parameters:\n'
+            f'  - detection_tracking_file_path (str):\n        - {detection_tracking_file_path}\n'
+            f'  - monitored_software_file_path (str):\n        - {monitored_software_file_path}\n'
+            f'  - monitored_software_name (str):\n        - {monitored_software_name}\n'
+            f'{formatted_info_search}\n'
+            f'{formatted_exclude_search}\n'
+        )
+    except Exception as error:
+        if 'Originating error on line' in str(error):
+            logger.debug(f'Forwarding caught {type(error).__name__} at line {error.__traceback__.tb_lineno} in <{__name__}>')
+            raise error
+        else:
+            error_args = {
+                'main_message': 'A general exception occurred during the value type validation.',
+                'error_type': Exception,
+                'original_error': error,
+            }
+            error_formatter(error_args, __name__, error.__traceback__.tb_lineno)
 
     try:
         # Creates list variable to be used for returning multiple found tracker files (ex. Rotation Backups).
@@ -227,6 +250,8 @@ def email_constructor(email_settings: dict, **message_args) -> None:
                     \\- program_error_message (required)\\
 
     Raises:
+        Exception: Forwarding caught {type(error).__name__} at line {error.__traceback__.tb_lineno} in <{__name__}>
+        Exception: A general exception occurred during the value type validation.
         AttributeError: The log_section value did not match.
         Exception: Forwarding caught {type(error).__name__} at line {error.__traceback__.tb_lineno} in <{__name__}>
         Exception: A general exception occurred when constructing the email message.
@@ -237,6 +262,29 @@ def email_constructor(email_settings: dict, **message_args) -> None:
     # For any third-party modules, set the flow before making the function call.
     logger_flowchart = logging.getLogger('flowchart')
     logger_flowchart.debug(f'Flowchart --> Function: {get_function_name()}')
+
+    # Checks function launch variables and logs passing parameters.
+    try:
+        # Validates required types.
+        value_type_validation(email_settings, dict, __name__, get_line_number())
+
+        # Requires pre-logger formatting because the logger can not use one line if/else or join without excluding sections of the the output.
+        formatted_email_settings = '  - email_settings (dict):\n        - ' + '\n        - '.join(': '.join((key, str(val))) for (key, val) in email_settings.items())
+        logger.debug(
+            'Passing parameters:\n'
+            f'{formatted_email_settings}\n'
+        )
+    except Exception as error:
+        if 'Originating error on line' in str(error):
+            logger.debug(f'Forwarding caught {type(error).__name__} at line {error.__traceback__.tb_lineno} in <{__name__}>')
+            raise error
+        else:
+            error_args = {
+                'main_message': 'A general exception occurred during the value type validation.',
+                'error_type': Exception,
+                'original_error': error,
+            }
+            error_formatter(error_args, __name__, error.__traceback__.tb_lineno)
 
     # Gets the main program root directory.
     main_script_path = pathlib.Path.cwd()
@@ -555,7 +603,7 @@ def email_constructor(email_settings: dict, **message_args) -> None:
             error_formatter(error_args, __name__, error.__traceback__.tb_lineno)
 
 
-def start_tracker(save_log_path, email_alerts: str, alert_program_errors: bool, monitored_software_settings: list, email_settings: dict, monitor_sleep: str, decryptor_web_companion_option: bool) -> None:
+def start_tracker(save_log_path: str, email_alerts: str, alert_program_errors: bool, monitored_software_settings: list, email_settings: dict, monitor_sleep: int, decryptor_web_companion_option: bool) -> None:
     """
     The start tracker makes all the decisions around a log file having spotlight matches. All the primary logic for tracking is done within this function.
 
@@ -565,10 +613,12 @@ def start_tracker(save_log_path, email_alerts: str, alert_program_errors: bool, 
         alert_program_errors (bool): Enables alerts when the program errors.
         monitored_software_settings (list): A list of dictionary monitored software setting values.
         email_settings (dict): Email setting values.
-        monitor_sleep (str): The amount of time between each log file spotlight check.
+        monitor_sleep (int): The amount of time between each log file spotlight check.
         decryptor_web_companion_option (bool): Allows a decryption web option for encrypted info.
 
     Raises:
+        Exception: Forwarding caught {type(error).__name__} at line {error.__traceback__.tb_lineno} in <{__name__}>
+        Exception: A general exception occurred during the value type validation.
         KeyError: The software search settings are missing required keys.
         Exception: Forwarding caught {type(error).__name__} at line {error.__traceback__.tb_lineno} in <{__name__}>
         Exception: A general exception occurred when attempting to send an email.
@@ -587,23 +637,41 @@ def start_tracker(save_log_path, email_alerts: str, alert_program_errors: bool, 
     # Custom detection log file for detected alerts.
     detected_logger = logging.getLogger('detected')
 
-    # ###############################################
-    # ##########Sets Pre Log Check Settings#########
-    # ###############################################
-    #
-    # Requires pre-logger formatting because the logger can not use one line if/else or join without excluding sections of the the output.
-    formatted_monitored_software_settings = '  - monitored_software_settings (list):' + str('\n        - ' + '\n        - '.join(map(str, monitored_software_settings)))
-    formatted_email_settings = '  - email_settings (dict):\n        - ' + '\n        - '.join(': '.join((key, str(val))) for (key, val) in email_settings.items())
-    logger.debug(
-        'Passing parameters:\n'
-        f'  - save_log_path (str):\n        - {save_log_path}\n'
-        f'  - email_alerts (bool):\n        - {email_alerts}\n'
-        f'  - alert_program_errors (bool):\n        - {alert_program_errors}\n'
-        f'{formatted_monitored_software_settings}\n'
-        f'{formatted_email_settings}\n'
-        f'  - monitor_sleep (str):\n        - {monitor_sleep}\n'
-        f'  - decryptor_web_companion_option (bool):\n        - {decryptor_web_companion_option}\n'
-    )
+    # Checks function launch variables and logs passing parameters.
+    try:
+        # Validates required types.
+        value_type_validation(save_log_path, str, __name__, get_line_number())
+        value_type_validation(email_alerts, bool, __name__, get_line_number())
+        value_type_validation(alert_program_errors, bool, __name__, get_line_number())
+        value_type_validation(monitored_software_settings, list, __name__, get_line_number())
+        value_type_validation(email_settings, dict, __name__, get_line_number())
+        value_type_validation(monitor_sleep, int, __name__, get_line_number())
+        value_type_validation(decryptor_web_companion_option, bool, __name__, get_line_number())
+
+        # Requires pre-logger formatting because the logger can not use one line if/else or join without excluding sections of the the output.
+        formatted_monitored_software_settings = '  - monitored_software_settings (list):' + str('\n        - ' + '\n        - '.join(map(str, monitored_software_settings)))
+        formatted_email_settings = '  - email_settings (dict):\n        - ' + '\n        - '.join(': '.join((key, str(val))) for (key, val) in email_settings.items())
+        logger.debug(
+            'Passing parameters:\n'
+            f'  - save_log_path (str):\n        - {save_log_path}\n'
+            f'  - email_alerts (bool):\n        - {email_alerts}\n'
+            f'  - alert_program_errors (bool):\n        - {alert_program_errors}\n'
+            f'{formatted_monitored_software_settings}\n'
+            f'{formatted_email_settings}\n'
+            f'  - monitor_sleep (str):\n        - {monitor_sleep}\n'
+            f'  - decryptor_web_companion_option (bool):\n        - {decryptor_web_companion_option}\n'
+        )
+    except Exception as error:
+        if 'Originating error on line' in str(error):
+            logger.debug(f'Forwarding caught {type(error).__name__} at line {error.__traceback__.tb_lineno} in <{__name__}>')
+            raise error
+        else:
+            error_args = {
+                'main_message': 'A general exception occurred during the value type validation.',
+                'error_type': Exception,
+                'original_error': error,
+            }
+            error_formatter(error_args, __name__, error.__traceback__.tb_lineno)
 
     # Sets the decryptor companion.
     # Checks if the user enabled the start_decryptor_site companion program program.
