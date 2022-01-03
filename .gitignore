@@ -1,4 +1,4 @@
-*.log
+*.log*
 venv/
 settings.yaml
 sample_search/

@@ -14,6 +14,7 @@ import time
 import yaml
 
 # Own module
+from ictoolkit.directors.email_director import send_email
 from ictoolkit.directors.log_director import setup_logger_yaml
 from ictoolkit.directors.yaml_director import read_yaml_config, yaml_value_validation
 from ictoolkit.directors.error_director import error_formatter
@@ -21,9 +22,10 @@ from ictoolkit.helpers.py_helper import get_function_name, get_line_number
 from tracker.tracker import start_tracker
 
 __author__ = 'IncognitoCoding'
+__copyright__ = 'Copyright 2022, logspotlight'
 __credits__ = ['IncognitoCoding']
 __license__ = 'GPL'
-__version__ = '0.3'
+__version__ = '0.4'
 __maintainer__ = 'IncognitoCoding'
 __status__ = 'Development'
 
@@ -453,6 +455,7 @@ def main():
     email_settings = startup_variables.get('email_settings')
     monitor_sleep = startup_variables.get('monitor_sleep')
     decryptor_web_companion_option = startup_variables.get('decryptor_web_companion_option')
+
     try:
         start_tracker(save_log_path, email_alerts, alert_program_errors, monitored_software_settings, email_settings, monitor_sleep, decryptor_web_companion_option)
     except KeyError as error:
@@ -476,15 +479,25 @@ def main():
         elif 'Originating error on line' in str(error):
             logger.debug(f'Captured caught {type(error).__name__} at line {error.__traceback__.tb_lineno} in <{__name__}>')
             logger.error(error)
+            if alert_program_errors is True and email_alerts is True:
+                send_email(email_settings, f'Log Spotlight - Exiting Program Error Occurred', str(error))
             print('Exiting...')
             exit()
         else:
-            error_args = {
-                'main_message': 'A general exception occurred when starting the tracker.',
-                'error_type': Exception,
-                'original_error': error,
-            }
-            error_formatter(error_args, __name__, error.__traceback__.tb_lineno)
+
+            try:
+                error_args = {
+                    'main_message': 'A general exception occurred when starting the tracker.',
+                    'error_type': Exception,
+                    'original_error': error,
+                }
+                error_formatter(error_args, __name__, error.__traceback__.tb_lineno)
+            except Exception as error:
+                if alert_program_errors is True and email_alerts is True:
+                    send_email(email_settings, f'Log Spotlight - Exiting Program Error Occurred', str(error))
+                logger.error(error)
+                print('Exiting...')
+                exit()
 
 
 # Checks that this is the main program initiates the classes to start the functions.
@@ -493,6 +506,7 @@ if __name__ == "__main__":
     # Prints out at the start of the program.
     print('# ' + '=' * 85)
     print('Author: ' + __author__)
+    print('Copyright: ' + __copyright__)
     print('Credits: ' + ', '.join(__credits__))
     print('License: ' + __license__)
     print('Version: ' + __version__)
@@ -503,20 +517,6 @@ if __name__ == "__main__":
     # Loops to keep the main program active.
     # The YAML configuration file will contain a sleep setting within the main function.
     while True:
-
-        try:
-            main()
-
-            # 1 second delay sleep to prevent system resource issues if the function fails and the loop runs without any pause.
-            time.sleep(5)
-        except KeyError as error:
-            # KeyError output does not process the escape sequence cleanly. This fixes the output and removes the string double quotes.
-            cleaned_error = str(error).replace(r'\n', '\n')[1:-1]
-            print(cleaned_error)
-            print('Exiting...')
-            exit()
-        except Exception as error:
-            if 'Originating error on line' in str(error):
-                print(error)
-                print('Exiting...')
-                exit()
+        main()
+        # 1 second delay sleep to prevent system resource issues if the function fails and the loop runs without any pause.
+        time.sleep(5)
