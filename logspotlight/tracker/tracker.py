@@ -32,9 +32,9 @@ __author__ = 'IncognitoCoding'
 __copyright__ = 'Copyright 2021, tracker'
 __credits__ = ['IncognitoCoding']
 __license__ = 'GPL'
-__version__ = '0.4'
+__version__ = '1.0'
 __maintainer__ = 'IncognitoCoding'
-__status__ = 'Development'
+__status__ = 'Production'
 
 
 def software_log_info_check(detection_tracking_file_path: str, monitored_software_file_path: str, monitored_software_name: str, info_search: Union[str, list], exclude_search: Union[str, list]) -> Union[list, None]:

@@ -25,9 +25,9 @@ __author__ = 'IncognitoCoding'
 __copyright__ = 'Copyright 2022, logspotlight'
 __credits__ = ['IncognitoCoding']
 __license__ = 'GPL'
-__version__ = '0.4'
+__version__ = '1.0'
 __maintainer__ = 'IncognitoCoding'
-__status__ = 'Development'
+__status__ = 'Production'
 
 
 def merge_software_monitored_settings(config_yaml_read: yaml) -> list:
