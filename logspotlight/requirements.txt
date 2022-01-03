@@ -4,7 +4,7 @@ click==7.1.2
 colorama==0.4.4
 cryptography==3.4.6
 Flask==1.1.2
-ictoolkit @ git+https://github.com/IncognitoCoding/ictoolkit.git@8190a2dcae1996e77a6430381ea7319b7bf85dc0
+ictoolkit @ git+https://github.com/IncognitoCoding/ictoolkit.git@d81d4dcbddf384847ebf5cd5dfa0ceb52ed2bdb7
 isort==5.10.1
 itsdangerous==1.1.0
 Jinja2==3.0.3
@@ -18,6 +18,7 @@ pylint==2.12.2
 PyYAML==5.4.1
 toml==0.10.2
 typing_extensions==4.0.1
+waitress==2.0.0
 Werkzeug==1.0.1
 wrapt==1.13.3
 WTForms==2.3.3

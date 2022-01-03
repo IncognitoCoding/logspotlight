@@ -5,7 +5,6 @@ Performs all log tracking and launches the decryptor companion.
 # Built-in/Generic Imports
 import os
 import logging
-import sys
 import glob
 import threading
 import time
@@ -27,16 +26,13 @@ from ictoolkit.directors.dict_director import remove_duplicate_dict_values_in_li
 from ictoolkit.directors.validation_director import value_type_validation
 from ictoolkit.directors.error_director import error_formatter
 from ictoolkit.helpers.py_helper import get_function_name, get_line_number
-# Required for the local companion module.
-lib_path = os.path.abspath(os.path.join(__file__, '..', '..'))
-sys.path.append(lib_path)
-from companion.decryptor.http_info_decryptor import start_decryptor_site
+from ictoolkit.directors.encryption_director import launch_decryptor_website
 
 __author__ = 'IncognitoCoding'
 __copyright__ = 'Copyright 2021, tracker'
 __credits__ = ['IncognitoCoding']
 __license__ = 'GPL'
-__version__ = '0.3'
+__version__ = '0.4'
 __maintainer__ = 'IncognitoCoding'
 __status__ = 'Development'
 
@@ -56,7 +52,7 @@ def software_log_info_check(detection_tracking_file_path: str, monitored_softwar
         list or None: a list of discovered search values that have not been previously matched. Each discovered value is per element. No discovered values will return None
 
     Raises:
-    Exception: Forwarding caught {type(error).__name__} at line {error.__traceback__.tb_lineno} in <{__name__}>
+        Exception: Forwarding caught {type(error).__name__} at line {error.__traceback__.tb_lineno} in <{__name__}>
         Exception: A general exception occurred during the value type validation.
         Exception: Forwarding caught {type(error).__name__} at line {error.__traceback__.tb_lineno} in <{__name__}>
         Exception: A general error occurred while populating the startup variables.
@@ -674,27 +670,31 @@ def start_tracker(save_log_path: str, email_alerts: str, alert_program_errors: b
             error_formatter(error_args, __name__, error.__traceback__.tb_lineno)
 
     # Sets the decryptor companion.
-    # Checks if the user enabled the start_decryptor_site companion program program.
+    # Checks if the user enabled the launch_decryptor_website companion program program.
     if decryptor_web_companion_option is True:
-        # Checks if the start_decryptor_site companion program program is not running for initial startup.
+        # Checks if the launch_decryptor_website companion program program is not running for initial startup.
         if 'companion_decryptor_thread' not in str(threading.enumerate()):
-            logger.info('Starting the start_decryptor_site companion program')
+            logger.info('Starting the launch_decryptor_website companion program')
             # Gets message encryption settings from the yaml configuration to pass to the companion decryptor.
             message_encryption_password = email_settings.get('message_encryption_password')
             message_encryption_random_salt = email_settings.get('message_encryption_random_salt')
-            # This calls the start_function_thread function and passes the companion start_decryptor_site function and arguments to the start_function_thread.
+            # Gets the main program root directory.
+            main_script_path = pathlib.Path.cwd()
+            # Creates the decryptor template path.
+            decryptor_template_path = os.path.abspath(f'{main_script_path}/decrypt_templates')
+            # This calls the start_function_thread function and passes the companion launch_decryptor_website function and arguments to the start_function_thread.
             # You have to use functools for this to work correctly. Adding the function without functools will cause the function to start before being passed to the start_function_thread.
-            start_function_thread(partial(start_decryptor_site, message_encryption_password, message_encryption_random_salt, False), 'companion_decryptor_thread', False)
+            start_function_thread(partial(launch_decryptor_website, message_encryption_password, message_encryption_random_salt, decryptor_template_path), 'companion_decryptor_thread', False)
             # Sleeps 5 seconds to allow startup.
             time.sleep(5)
             # Gets the hosts IP address for message output.
             host_ip = socket.gethostbyname(socket.gethostname())
             decryptor_url = f'http://{host_ip}:5000/'
-            # Validates the start_decryptor_site companion program started.
+            # Validates the launch_decryptor_website companion program started.
             if 'companion_decryptor_thread' in str(threading.enumerate()):
                 logger.info(f'The decryptor site companion program has started. You may access the webpage via http://127.0.0.1:5000/ or {decryptor_url}')
             else:
-                logger.warning('Failed to start the start_decryptor_site companion program. The program will continue, but additional troubleshooting will be required to utilize the decryption companion\'s web interface')
+                logger.warning('Failed to start the launch_decryptor_website companion program. The program will continue, but additional troubleshooting will be required to utilize the decryption companion\'s web interface')
         else:
             # Gets the hosts IP address for message output.
             host_ip = socket.gethostbyname(socket.gethostname())
@@ -702,11 +702,11 @@ def start_tracker(save_log_path: str, email_alerts: str, alert_program_errors: b
             logger.debug(f'The decryptor site companion program check passed. The site is still reachable via http://127.0.0.1:5000/ or {decryptor_url}.')
     elif decryptor_web_companion_option is False:
         decryptor_url = None
-        # Checks if the start_decryptor_site companion program is running. This can happen when the yaml is modified when the program is running.
+        # Checks if the launch_decryptor_website companion program is running. This can happen when the yaml is modified when the program is running.
         if 'companion_decryptor_thread' in str(threading.enumerate()):
-            logger.warning('The user has chosen to turn off the start_decryptor_site companion program. Please restart the program for this change to take effect')
+            logger.warning('The user has chosen to turn off the launch_decryptor_website companion program. Please restart the program for this change to take effect')
         else:
-            logger.debug('The user has chosen not to use the start_decryptor_site companion program')
+            logger.debug('The user has chosen not to use the launch_decryptor_website companion program')
     logger.debug('Starting the main program function')
     logger.info(f'{monitor_sleep} seconds until next log check')
     # Sleeps for the amount of seconds set in the YAML file.
@@ -781,10 +781,6 @@ def start_tracker(save_log_path: str, email_alerts: str, alert_program_errors: b
                 for index, info in enumerate(matched_software_info):
                     # Sets the found_entry value to a variable. This is done to decrease the code complexity.
                     matched_info = info.get('found_entry')
-                    # Custom log level that has been created for alerts. (39 = ALERT)
-                    logger.debug(f'Writing output to tracker log. Entry {index + 1} of {total_info_entries}')
-                    # Writes returned software info status.
-                    detected_logger.info(matched_info)
 
                     # Checks if email notifications are enabled
                     if email_alerts:
@@ -804,6 +800,10 @@ def start_tracker(save_log_path: str, email_alerts: str, alert_program_errors: b
                         # Custom log level that has been created for alerts. (39 = ALERT)
                         logger.debug('Email alerting is disabled. The found log event is not be sent')
 
+                    # Writes the discovered output to the detected log. This should write after email in case the SMTP server is offline. This prevents alerts from getting missed.
+                    logger.debug(f'Writing output to detected log. Entry {index + 1} of {total_info_entries}')
+                    # Writes returned software info status.
+                    detected_logger.info(matched_info)
                 # ###########################################################
                 # #######################Post-Processing#####################
                 # ###########################################################

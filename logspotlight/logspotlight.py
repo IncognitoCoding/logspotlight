@@ -21,7 +21,6 @@ from ictoolkit.helpers.py_helper import get_function_name, get_line_number
 from tracker.tracker import start_tracker
 
 __author__ = 'IncognitoCoding'
-__copyright__ = 'Copyright 2021, logspotlight'
 __credits__ = ['IncognitoCoding']
 __license__ = 'GPL'
 __version__ = '0.3'
@@ -464,7 +463,17 @@ def main():
         print('Exiting...')
         exit()
     except Exception as error:
-        if 'Originating error on line' in str(error):
+        if 'Failed to reach the SMTP server' in str(error):
+            logger.warning('Failed to reach the SMTP server. Another attempt will occur on the next log check.')
+        # This error is unique to the Mailrise SMTP relay.
+        elif 'recipient does not exist in configuration file' in str(error):
+            # Seeking Line Example: {'email@mysite.com': (551, b'recipient does not exist in configuration file')}
+            recipient_error = [recipient for recipient in str(error).split('\n') if 'recipient does not exist in' in recipient][0]
+            # Example Original: {'email@mysite.com': (551, b'recipient does not exist in configuration file')}
+            # Example Return: email@mysite.com
+            recipient = recipient_error.replace('{', '').replace('}', '').split(':')[0].replace('\'', '').strip()
+            logger.warning(f'The recipient \'{recipient}\' does not exist in the SMTP relay configuration file. The relay may be starting, or the recipient address is incorrect. Another attempt will occur on the next log check.')
+        elif 'Originating error on line' in str(error):
             logger.debug(f'Captured caught {type(error).__name__} at line {error.__traceback__.tb_lineno} in <{__name__}>')
             logger.error(error)
             print('Exiting...')
@@ -484,7 +493,6 @@ if __name__ == "__main__":
     # Prints out at the start of the program.
     print('# ' + '=' * 85)
     print('Author: ' + __author__)
-    print('Copyright: ' + __copyright__)
     print('Credits: ' + ', '.join(__credits__))
     print('License: ' + __license__)
     print('Version: ' + __version__)

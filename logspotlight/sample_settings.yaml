@@ -152,12 +152,12 @@ loggers:
     level: INFO
     handlers: [console, logspotlight_log_file]
     propagate: no
-  companion.decryptor.http_info_decryptor:
-    level: INFO
-    handlers: [console, logspotlight_log_file]
-    propagate: no
   ictoolkit:
-    level: INFO
+    level: ERROR
+    handlers: [logspotlight_log_file]
+    propagate: no
+  waitress:
+    level: ERROR
     handlers: [logspotlight_log_file]
     propagate: no
 
