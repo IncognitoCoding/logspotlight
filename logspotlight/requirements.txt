@@ -4,7 +4,7 @@ click==7.1.2
 colorama==0.4.4
 cryptography==3.4.6
 Flask==1.1.2
-ictoolkit @ git+https://github.com/IncognitoCoding/ictoolkit.git@d81d4dcbddf384847ebf5cd5dfa0ceb52ed2bdb7
+ictoolkit @ git+https://github.com/IncognitoCoding/ictoolkit.git@3ec4b5ab3d41c5a73d30a29413ee225044c5d2e4
 isort==5.10.1
 itsdangerous==1.1.0
 Jinja2==3.0.3

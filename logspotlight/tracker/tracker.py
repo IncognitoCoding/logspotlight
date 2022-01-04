@@ -22,7 +22,7 @@ from ictoolkit.directors.file_director import file_exist_check, search_file, sea
 from ictoolkit.directors.email_director import send_email
 from ictoolkit.directors.subprocess_director import start_subprocess
 from ictoolkit.directors.thread_director import start_function_thread
-from ictoolkit.directors.dict_director import remove_duplicate_dict_values_in_list
+from ictoolkit.directors.data_structure_director import remove_duplicate_dict_values_in_list
 from ictoolkit.directors.validation_director import value_type_validation
 from ictoolkit.directors.error_director import error_formatter
 from ictoolkit.helpers.py_helper import get_function_name, get_line_number
